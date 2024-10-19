@@ -15,8 +15,10 @@ public class JaseppiAudioManager {
     public JaseppiAudioManager() {
         this.audioPlayerManager = new DefaultAudioPlayerManager();
 
+        String refreshToken = System.getenv("REFRESH_TOKEN");
+
         YoutubeAudioSourceManager youtubeAudioSourceManager = new YoutubeAudioSourceManager(true);
-        youtubeAudioSourceManager.useOauth2("1//06zdZoNFGjDzPCgYIARAAGAYSNwF-L9IrAbe1gWXJqkGi1sBR2CjbVQC1RUmnjsYsSfn-fyureJlkKtKwKKrBM1W9najaJTGUjok", true);
+        youtubeAudioSourceManager.useOauth2(refreshToken, true);
         audioPlayerManager.registerSourceManager(youtubeAudioSourceManager);
         AudioSourceManagers.registerRemoteSources(audioPlayerManager, com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager.class);
 
