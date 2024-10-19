@@ -88,10 +88,18 @@ public class AudioCommands extends JaseppiCommandHandler {
         }
         AudioManager audioManager = guild.getAudioManager();
         switch (event.getName()) {
-            case "play" -> handlePlay(event, channel, audioManager);
-            case "leave" -> handleLeave(event, channel, audioManager);
-            case "skip" -> handleSkip(event, channel, audioManager);
-            case "repeat" -> handleRepeat(event, channel, audioManager);
+            case "play":
+                handlePlay(event, channel, audioManager);
+                break;
+            case "leave":
+                handleLeave(event, channel, audioManager);
+                break;
+            case "skip":
+                handleSkip(event, channel, audioManager);
+                break;
+            case "repeat":
+                handleRepeat(event, channel, audioManager);
+                break;
         }
     }
 
