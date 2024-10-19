@@ -16,6 +16,7 @@ import sh.sagan.sf6j.Move;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SF6Commands extends JaseppiCommandHandler {
 
@@ -89,14 +90,14 @@ public class SF6Commands extends JaseppiCommandHandler {
                         .map(CharacterId::getName)
                         .map(name -> new Command.Choice(name, name))
                         .limit(25)
-                        .toList();
+                        .collect(Collectors.toList());
             } else {
                 choices = Arrays.stream(CharacterId.VALUES)
                         .map(CharacterId::getName)
                         .filter(name -> name.toLowerCase().startsWith(currentValue.toLowerCase()))
                         .map(name -> new Command.Choice(name, name))
                         .limit(25)
-                        .toList();
+                        .collect(Collectors.toList());
             }
             event.replyChoices(choices).queue();
         } else if (focusedOptionName.equalsIgnoreCase("move")) {
@@ -112,14 +113,14 @@ public class SF6Commands extends JaseppiCommandHandler {
                         .map(Move::getIdentifier)
                         .map(identifier -> new Command.Choice(identifier, identifier))
                         .limit(25)
-                        .toList();
+                        .collect(Collectors.toList());
             } else {
                 choices = sf6GameData.getCharacterData().get(characterId).getMoves().stream()
                         .map(Move::getIdentifier)
                         .filter(identifier -> identifier.toLowerCase().startsWith(currentValue))
                         .map(identifier -> new Command.Choice(identifier, identifier))
                         .limit(25)
-                        .toList();
+                        .collect(Collectors.toList());
             }
             event.replyChoices(choices).queue();
         }
