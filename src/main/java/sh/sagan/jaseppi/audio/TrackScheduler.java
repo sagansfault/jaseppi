@@ -49,31 +49,4 @@ public class TrackScheduler extends AudioEventAdapter {
             nextTrack();
         }
     }
-
-    public String getQueueMessage(int newTracksFromEnd) {
-        StringBuilder builder = new StringBuilder("```\n");
-        int size = queue.size();
-        int start = size - newTracksFromEnd;
-        int index = 0;
-        List<AudioTrack> tracks = new ArrayList<>(queue);
-        AudioTrack playingTrack = player.getPlayingTrack();
-        if (playingTrack != null) {
-            tracks.add(0, playingTrack);
-        }
-        for (AudioTrack audioTrack : tracks) {
-            if (index == 0) {
-                builder.append("> ");
-            } else {
-                builder.append(index).append(". ");
-            }
-            builder.append(audioTrack.getInfo().title);
-            if (index > start) {
-                builder.append(" *");
-            }
-            builder.append("\n");
-            index += 1;
-        }
-        builder.append("```");
-        return builder.toString();
-    }
 }

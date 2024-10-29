@@ -4,7 +4,6 @@ import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
-import com.sedmelluq.discord.lavaplayer.track.AudioReference;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
@@ -12,7 +11,6 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.events.session.SessionDisconnectEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.managers.AudioManager;
@@ -20,6 +18,10 @@ import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.jetbrains.annotations.NotNull;
 import sh.sagan.jaseppi.Jaseppi;
 import sh.sagan.jaseppi.JaseppiCommandHandler;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class AudioCommands extends JaseppiCommandHandler {
 
@@ -114,18 +116,16 @@ public class AudioCommands extends JaseppiCommandHandler {
             @Override
             public void trackLoaded(AudioTrack track) {
                 connectAndPlay(audioManager, channel, track);
-                String message = jaseppi.getAudioManager().getTrackScheduler().getQueueMessage(1);
+                String message = "```" + track.getInfo().title + "```";
                 event.getHook().editOriginal("Queued\n" + message).queue();
             }
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                AudioTrack track = playlist.getSelectedTrack();
-                if (track == null) {
-                    track = playlist.getTracks().get(0);
-                }
-                connectAndPlay(audioManager, channel, track);
-                String message = jaseppi.getAudioManager().getTrackScheduler().getQueueMessage(1);
+                List<AudioTrack> tracks = playlist.getTracks();
+                connectAndPlay(audioManager, channel, tracks);
+                String message = tracks.stream().map(t -> t.getInfo().title).collect(Collectors.joining("\n"));
+                message = "```" + message + "```";
                 event.getHook().editOriginal("Queued\n" + message).queue();
             }
 
@@ -145,6 +145,13 @@ public class AudioCommands extends JaseppiCommandHandler {
     private void connectAndPlay(AudioManager audioManager, AudioChannelUnion channel, AudioTrack track) {
         connectAndSetHandler(audioManager, channel);
         jaseppi.getAudioManager().getTrackScheduler().queue(track);
+    }
+
+    private void connectAndPlay(AudioManager audioManager, AudioChannelUnion channel, Collection<AudioTrack> tracks) {
+        connectAndSetHandler(audioManager, channel);
+        for (AudioTrack track : tracks) {
+            jaseppi.getAudioManager().getTrackScheduler().queue(track);
+        }
     }
 
     private void connectAndSetHandler(AudioManager audioManager, AudioChannelUnion channel) {
