@@ -130,7 +130,7 @@ public class AudioCommands extends JaseppiCommandHandler {
                     message = "```" + message + "```";
                     event.getHook().editOriginal("Queued\n" + message).queue();
                 } else {
-                    AudioTrack first = tracks.getFirst();
+                    AudioTrack first = tracks.get(0);
                     if (first == null) {
                         return;
                     }
