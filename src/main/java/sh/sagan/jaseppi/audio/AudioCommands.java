@@ -109,7 +109,8 @@ public class AudioCommands extends JaseppiCommandHandler {
         event.deferReply().queue();
         AudioPlayerManager audioPlayerManager = jaseppi.getAudioManager().getAudioPlayerManager();
         String query = event.getOption("query").getAsString().trim();
-        if (!query.startsWith("http")) {
+        boolean link = query.startsWith("http");
+        if (!link) {
             query = String.format("ytsearch:%s", query);
         }
         audioPlayerManager.loadItem(query, new AudioLoadResultHandler() {
@@ -123,10 +124,18 @@ public class AudioCommands extends JaseppiCommandHandler {
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
                 List<AudioTrack> tracks = playlist.getTracks();
-                connectAndPlay(audioManager, channel, tracks);
-                String message = tracks.stream().map(t -> t.getInfo().title).collect(Collectors.joining("\n"));
-                message = "```" + message + "```";
-                event.getHook().editOriginal("Queued\n" + message).queue();
+                if (link) {
+                    connectAndPlay(audioManager, channel, tracks);
+                    String message = tracks.stream().map(t -> t.getInfo().title).collect(Collectors.joining("\n"));
+                    message = "```" + message + "```";
+                    event.getHook().editOriginal("Queued\n" + message).queue();
+                } else {
+                    AudioTrack first = tracks.getFirst();
+                    if (first == null) {
+                        return;
+                    }
+                    trackLoaded(first);
+                }
             }
 
             @Override
