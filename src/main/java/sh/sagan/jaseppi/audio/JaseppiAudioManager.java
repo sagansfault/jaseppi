@@ -16,7 +16,7 @@ public class JaseppiAudioManager {
         this.audioPlayerManager = new DefaultAudioPlayerManager();
 
         YoutubeAudioSourceManager youtubeAudioSourceManager = new YoutubeAudioSourceManager(true);
-        youtubeAudioSourceManager.useOauth2(null, false);
+        youtubeAudioSourceManager.useOauth2(System.getenv("REFRESH_TOKEN"), true);
 
         audioPlayerManager.registerSourceManager(youtubeAudioSourceManager);
         AudioSourceManagers.registerRemoteSources(audioPlayerManager, com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager.class);
