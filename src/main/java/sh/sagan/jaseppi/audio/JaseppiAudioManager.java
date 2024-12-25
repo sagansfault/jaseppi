@@ -5,6 +5,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
+import dev.lavalink.youtube.clients.Web;
 
 public class JaseppiAudioManager {
 
@@ -12,13 +13,11 @@ public class JaseppiAudioManager {
     private final AudioPlayer player;
     private final TrackScheduler trackScheduler;
 
-    public JaseppiAudioManager() {
+    public JaseppiAudioManager(String poToken, String visitorData) {
         this.audioPlayerManager = new DefaultAudioPlayerManager();
 
-        String refreshToken = System.getenv("REFRESH_TOKEN");
-
+        Web.setPoTokenAndVisitorData(poToken, visitorData);
         YoutubeAudioSourceManager youtubeAudioSourceManager = new YoutubeAudioSourceManager(true);
-        youtubeAudioSourceManager.useOauth2(refreshToken, true);
         audioPlayerManager.registerSourceManager(youtubeAudioSourceManager);
         AudioSourceManagers.registerRemoteSources(audioPlayerManager, com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager.class);
 
