@@ -78,6 +78,12 @@ public class AudioCommands extends JaseppiCommandHandler {
             event.reply("?").queue();
             return;
         }
+        if (!event.getName().equalsIgnoreCase("play") &&
+                !event.getName().equalsIgnoreCase("leave") &&
+                !event.getName().equalsIgnoreCase("skip") &&
+                !event.getName().equalsIgnoreCase("repeat")) {
+            return;
+        }
         GuildVoiceState voiceState = member.getVoiceState();
         if (voiceState == null) {
             event.reply("Hop in vc").queue();
