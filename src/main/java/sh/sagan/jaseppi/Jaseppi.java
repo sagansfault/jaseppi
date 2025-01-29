@@ -32,8 +32,7 @@ public class Jaseppi {
         CommandListUpdateAction commands = jda.getGuildById("466452910197440514").updateCommands();
         Stream.of(
                 new SF6Commands(jaseppi),
-                new AudioCommands(jaseppi),
-                new AICommands(jaseppi)
+                new AudioCommands(jaseppi)
         ).forEach(handler -> {
             jda.addEventListener(handler);
             handler.register(commands);
