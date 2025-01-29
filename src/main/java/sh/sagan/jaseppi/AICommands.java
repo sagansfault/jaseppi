@@ -36,11 +36,13 @@ public class AICommands extends JaseppiCommandHandler {
 
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
+        System.out.println("got message");
         Message message = event.getMessage();
         String content = message.getContentRaw();
         if (content.startsWith(".talk")) {
             content = content.substring(6);
             String data = String.format("{\"model\": \"%s\",\"stream\": false,\"messages\": [{\"role\": \"user\", \"content\": \"%s\"}]}", MODEL, content);
+            System.out.println("data=" + data);
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(CHAT_ADDRESS))
                     .timeout(Duration.ofMinutes(2))
@@ -50,6 +52,7 @@ public class AICommands extends JaseppiCommandHandler {
             jaseppi.getHttpClient().sendAsync(request, HttpResponse.BodyHandlers.ofString())
                     .thenApply(HttpResponse::body)
                     .thenAccept(response -> {
+                        System.out.println("response=" + response);
                         JsonObject json = Main.GSON.fromJson(response, JsonObject.class);
                         response = json.get("message").getAsJsonObject().get("content").getAsString();
                         response = response.replaceAll("\u003cthink\u003e\n\n\u003c/think\u003e\n\n", "");
