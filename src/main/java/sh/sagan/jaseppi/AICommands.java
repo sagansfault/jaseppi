@@ -1,5 +1,6 @@
 package sh.sagan.jaseppi;
 
+import com.google.gson.JsonObject;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -71,9 +72,9 @@ public class AICommands extends JaseppiCommandHandler {
         jaseppi.getHttpClient().sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body)
                 .thenAccept(response -> {
-                    Matcher matcher = REGEX.matcher(response);
-                    matcher.find();
-                    response = matcher.group(1).replaceAll("\u003cthink\u003e\n\n\u003c/think\u003e\n\n", "");
+                    JsonObject json = Main.GSON.fromJson(response, JsonObject.class);
+                    response = json.get("message").getAsJsonObject().get("content").getAsString();
+                    response = response.replaceAll("\u003cthink\u003e\n\n\u003c/think\u003e\n\n", "");
                     event.getHook().editOriginal(response).queue();
                 });
     }
