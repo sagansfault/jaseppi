@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 public class AICommands extends JaseppiCommandHandler {
 
-    private static final Pattern REGEX = Pattern.compile("content\": ?\"(.+)\"");
+    private static final Pattern REGEX = Pattern.compile("content\": ?\"(.+)\"\n  },");
 
     private static final String MODEL = "deepseek-r1:1.5b";
     private static final String CHAT_ADDRESS = "http://localhost:8888/api/chat";
@@ -73,7 +73,7 @@ public class AICommands extends JaseppiCommandHandler {
                 .thenAccept(response -> {
                     Matcher matcher = REGEX.matcher(response);
                     matcher.find();
-                    response = matcher.group(1).replaceAll("\\u003cthink\\u003e\\n\\n\\u003c/think\\u003e\\n\\n", "");
+                    response = matcher.group(1).replaceAll("\u003cthink\u003e\n\n\u003c/think\u003e\n\n", "");
                     event.getHook().editOriginal(response).queue();
                 });
     }
