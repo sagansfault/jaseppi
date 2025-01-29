@@ -85,6 +85,7 @@ public class AICommands extends JaseppiCommandHandler {
         jaseppi.getHttpClient().sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body)
                 .thenAccept(response -> {
+                    System.out.println("body=" + response);
                     Matcher matcher = REGEX.matcher(response);
                     matcher.find();
                     response = matcher.group(1);
