@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 public class AICommands extends JaseppiCommandHandler {
 
-    private static final Pattern REGEX = Pattern.compile("content\": \"(.+)\"");
+    private static final Pattern REGEX = Pattern.compile("response\": ?\"(.+)\"");
 
     private static final String MODEL = "deepseek-r1:1.5b";
     private static final String ASK_ADDRESS = "http://localhost:8888/api/generate";
@@ -72,6 +72,7 @@ public class AICommands extends JaseppiCommandHandler {
         event.deferReply().queue();
         String prompt = event.getOption("query").getAsString().trim();
         String data = String.format("{\"model\": \"%s\",\"stream\": false,\"prompt\": \"%s\"}", MODEL, prompt);
+        System.out.println("data=" + data);
         sendRequest(event, ASK_ADDRESS, data);
     }
 
