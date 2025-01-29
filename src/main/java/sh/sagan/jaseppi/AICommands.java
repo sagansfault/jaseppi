@@ -17,10 +17,9 @@ import java.util.regex.Pattern;
 
 public class AICommands extends JaseppiCommandHandler {
 
-    private static final Pattern REGEX = Pattern.compile("response\":\"(.+)\",\"d");
+    private static final Pattern REGEX = Pattern.compile("content\": ?\"(.+)\"");
 
     private static final String MODEL = "deepseek-r1:1.5b";
-    private static final String ASK_ADDRESS = "http://localhost:8888/api/generate";
     private static final String CHAT_ADDRESS = "http://localhost:8888/api/chat";
 
     public AICommands(Jaseppi jaseppi) {
@@ -31,9 +30,6 @@ public class AICommands extends JaseppiCommandHandler {
     public void register(CommandListUpdateAction commands) {
         commands.addCommands(
                 Commands.slash("talk", "Ask me anything")
-                        .addOption(OptionType.STRING, "query", "Query", true)
-                        .setGuildOnly(true),
-                Commands.slash("ask", "Ask me anything")
                         .addOption(OptionType.STRING, "query", "Query", true)
                         .setGuildOnly(true)
         );
@@ -55,9 +51,6 @@ public class AICommands extends JaseppiCommandHandler {
             case "talk":
                 handleTalk(event);
                 break;
-            case "ask":
-                handleAsk(event);
-                break;
         }
     }
 
@@ -66,13 +59,6 @@ public class AICommands extends JaseppiCommandHandler {
         String prompt = event.getOption("query").getAsString().trim();
         String data = String.format("{\"model\": \"%s\",\"stream\": false,\"messages\": [{\"role\": \"user\", \"content\": \"%s\"}]}", MODEL, prompt);
         sendRequest(event, CHAT_ADDRESS, data);
-    }
-
-    private void handleAsk(SlashCommandInteractionEvent event) {
-        event.deferReply().queue();
-        String prompt = event.getOption("query").getAsString().trim();
-        String data = String.format("{\"model\": \"%s\",\"stream\": false,\"prompt\": \"%s\"}", MODEL, prompt);
-        sendRequest(event, ASK_ADDRESS, data);
     }
 
     private void sendRequest(SlashCommandInteractionEvent event, String address, String data) {
@@ -85,7 +71,6 @@ public class AICommands extends JaseppiCommandHandler {
         jaseppi.getHttpClient().sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenApply(HttpResponse::body)
                 .thenAccept(response -> {
-                    System.out.println("body=" + response);
                     Matcher matcher = REGEX.matcher(response);
                     matcher.find();
                     response = matcher.group(1).replaceAll("\\u003cthink\\u003e\\n\\n\\u003c/think\\u003e\\n\\n", "");
