@@ -35,8 +35,8 @@ public class Jaseppi {
                 new AudioCommands(jaseppi),
                 new AICommands(jaseppi)
         ).forEach(handler -> {
-            handler.register(commands);
             jda.addEventListener(handler);
+            handler.register(commands);
         });
         commands.queue();
 
