@@ -18,8 +18,8 @@ import java.time.Duration;
 
 public class AICommands extends JaseppiCommandHandler {
 
-    private static final String MODEL = "deepseek-r1:1.5b";
-    private static final String CHAT_ADDRESS = "http://localhost:8888/api/chat";
+    private static final String MODEL = "qwen2:1.5b";
+    private static final String CHAT_ADDRESS = "http://localhost:9990/api/chat";
 
     public AICommands(Jaseppi jaseppi) {
         super(jaseppi);
