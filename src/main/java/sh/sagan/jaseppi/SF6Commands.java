@@ -94,7 +94,7 @@ public class SF6Commands extends JaseppiCommandHandler {
             } else {
                 choices = Arrays.stream(CharacterId.VALUES)
                         .map(CharacterId::getName)
-                        .filter(name -> name.toLowerCase().startsWith(currentValue.toLowerCase()))
+                        .filter(name -> name.toLowerCase().contains(currentValue.toLowerCase()))
                         .map(name -> new Command.Choice(name, name))
                         .limit(25)
                         .collect(Collectors.toList());
@@ -116,9 +116,8 @@ public class SF6Commands extends JaseppiCommandHandler {
                         .collect(Collectors.toList());
             } else {
                 choices = sf6GameData.getCharacterData().get(characterId).getMoves().stream()
-                        .map(Move::getIdentifier)
-                        .filter(identifier -> identifier.toLowerCase().startsWith(currentValue))
-                        .map(identifier -> new Command.Choice(identifier, identifier))
+                        .filter(move -> move.getIdentifier().toLowerCase().contains(currentValue) || move.getName().toLowerCase().contains(currentValue))
+                        .map(move -> new Command.Choice(String.format("%s (%s)", move.getIdentifier(), move.getName()), move.getIdentifier()))
                         .limit(25)
                         .collect(Collectors.toList());
             }
