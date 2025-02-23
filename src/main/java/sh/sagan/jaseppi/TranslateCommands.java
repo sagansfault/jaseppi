@@ -62,7 +62,8 @@ public class TranslateCommands extends JaseppiCommandHandler {
     private String getResponseFromBody(String body) {
         Matcher matcher = PATTERN.matcher(body);
         if (matcher.groupCount() < 2) {
-            return "";
+            System.out.println(body);
+            return "no groups";
         }
         return matcher.group(1);
     }
