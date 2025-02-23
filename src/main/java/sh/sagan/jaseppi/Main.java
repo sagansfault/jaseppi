@@ -25,7 +25,6 @@ public class Main {
         String read;
         try {
             read = new String(Files.readAllBytes(Path.of("config.json")));
-            System.out.println(read);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
