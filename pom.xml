@@ -111,6 +111,11 @@
             <groupId>com.google.cloud</groupId>
             <artifactId>google-cloud-translate</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.deepl.api</groupId>
+            <artifactId>deepl-java</artifactId>
+            <version>1.9.0</version>
+        </dependency>
     </dependencies>
 
 </project>
