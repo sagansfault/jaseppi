@@ -44,7 +44,7 @@ public class TranslateCommands extends JaseppiCommandHandler {
         }
         event.deferReply().queue();
 
-        String text = event.getOption("text").getAsString();
+        String text = event.getOption("text").getAsString().replaceAll(" ", "%20");
         String source = te ? "en" : "ja";
         String target = te ? "ja" : "en";
 
