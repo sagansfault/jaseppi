@@ -79,7 +79,7 @@ public class TranslateCommands extends JaseppiCommandHandler {
                 .setSourceLanguageCode("ja")
                 .setTargetLanguageCode("en")
                 .addContents(text)
-                .setTransliterationConfig(TransliterationConfig.newBuilder().setEnableTransliteration(true))
+                .setTransliterationConfig(TransliterationConfig.newBuilder().setEnableTransliteration(true).build())
                 .build();
 
         TranslateTextResponse response = client.translateText(request);
