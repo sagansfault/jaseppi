@@ -2,6 +2,7 @@ package sh.sagan.jaseppi;
 
 import com.deepl.api.DeepLClient;
 import com.deepl.api.DeepLException;
+import com.deepl.api.Usage;
 import com.moji4j.MojiConverter;
 import com.moji4j.MojiDetector;
 import fr.free.nrw.jakaroma.Jakaroma;
@@ -55,7 +56,12 @@ public class TranslateCommands extends JaseppiCommandHandler {
         }
 
         try {
-            text = client.translateText(text, source, target).getText();
+            Usage.Detail character = client.getUsage().getCharacter();
+            if (character != null && (double) character.getCount() / 500_000 > 0.9) {
+                text = "Character limit reached for this month";
+            } else {
+                text = client.translateText(text, source, target).getText();
+            }
         } catch (DeepLException | InterruptedException e) {
             throw new RuntimeException(e);
         }
