@@ -56,7 +56,7 @@ public class TranslateCommands extends JaseppiCommandHandler {
         String source = te ? "en" : "ja";
         String target = te ? "ja" : "en";
 
-        LocationName parent = LocationName.of("jaseppi-451803", "global");
+        LocationName parent = LocationName.of("jaseppi-451803", "us-central1");
         TranslateTextRequest request = TranslateTextRequest.newBuilder()
                 .setParent(parent.toString())
                 .setMimeType("text/plain")
