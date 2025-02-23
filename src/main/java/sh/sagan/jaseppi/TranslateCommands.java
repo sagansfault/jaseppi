@@ -62,7 +62,8 @@ public class TranslateCommands extends JaseppiCommandHandler {
                 .setMimeType("text/plain")
                 .setSourceLanguageCode(source)
                 .setTargetLanguageCode(target)
-                .setTransliterationConfig(TransliterationConfig.newBuilder().setEnableTransliteration(true).build())
+                .clearTransliterationConfig()
+                .setTransliterationConfig(TransliterationConfig.newBuilder().setEnableTransliteration(true))
                 .addContents(text)
                 .build();
 
