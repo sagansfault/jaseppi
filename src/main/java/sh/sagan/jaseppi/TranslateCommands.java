@@ -1,6 +1,7 @@
 package sh.sagan.jaseppi;
 
 import com.google.cloud.translate.v3.LocationName;
+import com.google.cloud.translate.v3.RomanizeTextRequest;
 import com.google.cloud.translate.v3.TranslateTextRequest;
 import com.google.cloud.translate.v3.TranslateTextResponse;
 import com.google.cloud.translate.v3.Translation;
@@ -56,29 +57,28 @@ public class TranslateCommands extends JaseppiCommandHandler {
         }
         event.deferReply().queue();
 
-        String text = event.getOption("text").getAsString().trim().replaceAll(" ", "%20");
+        String text = event.getOption("text").getAsString().trim();
         String source = te ? "en" : "ja";
         String target = te ? "ja" : "en";
 
-        HttpRequest req = HttpRequest.newBuilder()
-                .GET()
-                .uri(URI.create(String.format("https://api.romaji2kana.com/v1/to/kana?q=%s", text)))
-                .build();
-        String kanaResponse;
-        try {
-            kanaResponse = jaseppi.getHttpClient().send(req, HttpResponse.BodyHandlers.ofString()).body();
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        kanaResponse = Main.GSON.fromJson(kanaResponse, JsonObject.class).get("a").getAsString();
+//        HttpRequest req = HttpRequest.newBuilder()
+//                .GET()
+//                .uri(URI.create(String.format("https://api.romaji2kana.com/v1/to/kana?q=%s", text.trim().replaceAll(" ", "%20"))))
+//                .build();
+//        try {
+//            text = jaseppi.getHttpClient().send(req, HttpResponse.BodyHandlers.ofString()).body();
+//        } catch (IOException | InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
+//        text = Main.GSON.fromJson(text, JsonObject.class).get("a").getAsString();
 
         LocationName parent = LocationName.of("jaseppi-451803", "global");
         TranslateTextRequest request = TranslateTextRequest.newBuilder()
                 .setParent(parent.toString())
                 .setMimeType("text/plain")
-                .setSourceLanguageCode(source)
-                .setTargetLanguageCode(target)
-                .addContents(kanaResponse)
+                .setSourceLanguageCode("ja")
+                .setTargetLanguageCode("en")
+                .addContents(text)
                 .setTransliterationConfig(TransliterationConfig.newBuilder().setEnableTransliteration(true))
                 .build();
 
