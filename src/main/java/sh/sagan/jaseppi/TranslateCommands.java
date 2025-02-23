@@ -3,6 +3,7 @@ package sh.sagan.jaseppi;
 import com.deepl.api.DeepLClient;
 import com.deepl.api.DeepLException;
 import com.google.gson.JsonObject;
+import fr.free.nrw.jakaroma.Jakaroma;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -89,17 +90,18 @@ public class TranslateCommands extends JaseppiCommandHandler {
         }
 
         if (te) {
-            HttpRequest req = HttpRequest.newBuilder()
-                    .GET()
-                    .uri(URI.create(String.format("https://api.romaji2kana.com/v1/to/romaji?q=%s", text.trim().replaceAll(" ", "%20"))))
-                    .build();
-            String romaji;
-            try {
-                romaji = jaseppi.getHttpClient().send(req, HttpResponse.BodyHandlers.ofString()).body();
-            } catch (IOException | InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            romaji = Main.GSON.fromJson(romaji, JsonObject.class).get("a").getAsString();
+//            HttpRequest req = HttpRequest.newBuilder()
+//                    .GET()
+//                    .uri(URI.create(String.format("https://api.romaji2kana.com/v1/to/romaji?q=%s", text.trim().replaceAll(" ", "%20"))))
+//                    .build();
+//            String romaji;
+//            try {
+//                romaji = jaseppi.getHttpClient().send(req, HttpResponse.BodyHandlers.ofString()).body();
+//            } catch (IOException | InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
+//            romaji = Main.GSON.fromJson(romaji, JsonObject.class).get("a").getAsString();
+            String romaji = new Jakaroma().convert(text, false, false);
             text += " (" + romaji + ")";
         }
 
