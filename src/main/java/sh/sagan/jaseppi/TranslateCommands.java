@@ -1,23 +1,28 @@
 package sh.sagan.jaseppi;
 
+import com.google.cloud.translate.v3.LocationName;
+import com.google.cloud.translate.v3.TranslateTextRequest;
+import com.google.cloud.translate.v3.TranslateTextResponse;
+import com.google.cloud.translate.v3.TranslationServiceClient;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.jetbrains.annotations.NotNull;
 
-import java.net.URI;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.io.IOException;
 
 public class TranslateCommands extends JaseppiCommandHandler {
 
-    private static final Pattern PATTERN = Pattern.compile("c2aHje\">(.*)</span>");
+    private final TranslationServiceClient client;
 
     public TranslateCommands(Jaseppi jaseppi) {
         super(jaseppi);
+        try {
+            this.client = TranslationServiceClient.create();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -48,23 +53,18 @@ public class TranslateCommands extends JaseppiCommandHandler {
         String source = te ? "en" : "ja";
         String target = te ? "ja" : "en";
 
-        String uri = String.format("https://translate.google.ca/?sl=%s&tl=%s&text=%s&op=translate", source, target, text);
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(uri))
-                .GET()
-                .build();
-        jaseppi.getHttpClient().sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenApply(HttpResponse::body)
-                .exceptionally(t -> "Error sending http request: " + t)
-                .thenAccept(response -> event.getHook().editOriginal(getResponseFromBody(response)).queue());
-    }
+        String projectId = "jaseppi-451803";
 
-    private String getResponseFromBody(String body) {
-        Matcher matcher = PATTERN.matcher(body);
-        if (matcher.groupCount() < 2) {
-            System.out.println(body);
-            return "no groups";
-        }
-        return matcher.group(1);
+        LocationName parent = LocationName.of(projectId, "global");
+        TranslateTextRequest request = TranslateTextRequest.newBuilder()
+                .setParent(parent.toString())
+                .setMimeType("text/plain")
+                .setSourceLanguageCode(source)
+                .setTargetLanguageCode(target)
+                .addContents(text)
+                .build();
+
+        TranslateTextResponse response = client.translateText(request);
+        event.getHook().editOriginal(response.getTranslations(0).getTranslatedText()).queue();
     }
 }
