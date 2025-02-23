@@ -64,18 +64,6 @@
         </repository>
     </repositories>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>com.google.cloud</groupId>
-                <artifactId>libraries-bom</artifactId>
-                <version>26.54.0</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <dependency>
             <groupId>net.dv8tion</groupId>
@@ -108,10 +96,6 @@
             <version>2.11.0</version>
         </dependency>
         <dependency>
-            <groupId>com.google.cloud</groupId>
-            <artifactId>google-cloud-translate</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.deepl.api</groupId>
             <artifactId>deepl-java</artifactId>
             <version>1.9.0</version>
@@ -119,6 +103,11 @@
         <dependency>
             <groupId>com.github.nicolas-raoul</groupId>
             <artifactId>jakaroma</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.andree-surya</groupId>
+            <artifactId>moji4j</artifactId>
             <version>1.0.0</version>
         </dependency>
     </dependencies>
