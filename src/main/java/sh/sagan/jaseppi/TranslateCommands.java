@@ -19,7 +19,7 @@ public class TranslateCommands extends JaseppiCommandHandler {
 
     public TranslateCommands(Jaseppi jaseppi) {
         super(jaseppi);
-        this.client = new DeepLClient(System.getenv("DEEPL_API_KEY"));
+        this.client = new DeepLClient(jaseppi.getConfig().getDeeplAPIKey());
         this.jakaroma = new Jakaroma();
         this.mojiConverter = new MojiConverter();
         this.mojiDetector = new MojiDetector();

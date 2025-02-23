@@ -13,21 +13,23 @@ import java.util.stream.Stream;
 public class Jaseppi {
 
     private final JDA jda;
+    private final Config config;
     private final GameData sf6GameData;
     private final JaseppiAudioManager audioManager;
     private final HttpClient httpClient;
 
-    private Jaseppi(JDA jda, GameData sf6GameData) {
+    private Jaseppi(JDA jda, Config config, GameData sf6GameData) {
         this.jda = jda;
+        this.config = config;
         this.sf6GameData = sf6GameData;
-        this.audioManager = new JaseppiAudioManager();
+        this.audioManager = new JaseppiAudioManager(this);
         this.httpClient = HttpClient.newBuilder().build();
     }
 
-    public static Jaseppi create(JDA jda) {
+    public static Jaseppi create(JDA jda, Config config) {
         GameData sf6GameData = SF6J.load().join();
 
-        Jaseppi jaseppi = new Jaseppi(jda, sf6GameData);
+        Jaseppi jaseppi = new Jaseppi(jda, config, sf6GameData);
 
         CommandListUpdateAction commands = jda.getGuildById("466452910197440514").updateCommands();
         Stream.of(
@@ -45,6 +47,10 @@ public class Jaseppi {
 
     public JDA getJDA() {
         return jda;
+    }
+
+    public Config getConfig() {
+        return config;
     }
 
     public GameData getSF6GameData() {
