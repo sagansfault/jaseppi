@@ -5,6 +5,7 @@ import com.google.cloud.translate.v3.TranslateTextRequest;
 import com.google.cloud.translate.v3.TranslateTextResponse;
 import com.google.cloud.translate.v3.Translation;
 import com.google.cloud.translate.v3.TranslationServiceClient;
+import com.google.cloud.translate.v3.TransliterationConfig;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -61,6 +62,7 @@ public class TranslateCommands extends JaseppiCommandHandler {
                 .setMimeType("text/plain")
                 .setSourceLanguageCode(source)
                 .setTargetLanguageCode(target)
+                .setTransliterationConfig(TransliterationConfig.newBuilder().setEnableTransliteration(true).build())
                 .addContents(text)
                 .build();
 
