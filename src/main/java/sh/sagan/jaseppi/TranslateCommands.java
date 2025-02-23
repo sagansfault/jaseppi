@@ -49,7 +49,7 @@ public class TranslateCommands extends JaseppiCommandHandler {
         String target = te ? "ja" : "en-US";
 
         if (tj) {
-            if (mojiDetector.hasKana(text) || mojiDetector.hasKanji(text)) {
+            if (!mojiDetector.hasKana(text) && !mojiDetector.hasKanji(text)) {
                 text = mojiConverter.convertRomajiToHiragana(text);
             }
         }
