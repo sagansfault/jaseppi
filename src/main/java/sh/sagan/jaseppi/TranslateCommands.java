@@ -72,19 +72,6 @@ public class TranslateCommands extends JaseppiCommandHandler {
             }
         }
 
-//        if (tj) {
-//            HttpRequest req = HttpRequest.newBuilder()
-//                    .GET()
-//                    .uri(URI.create(String.format("https://api.romaji2kana.com/v1/to/kana?q=%s", text.trim().replaceAll(" ", "%20"))))
-//                    .build();
-//            try {
-//                text = jaseppi.getHttpClient().send(req, HttpResponse.BodyHandlers.ofString()).body();
-//            } catch (IOException | InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
-//            text = Main.GSON.fromJson(text, JsonObject.class).get("a").getAsString();
-//        }
-
         try {
             text = client.translateText(text, source, target).getText();
         } catch (DeepLException | InterruptedException e) {
@@ -92,7 +79,8 @@ public class TranslateCommands extends JaseppiCommandHandler {
         }
 
         if (te) {
-            String romaji = new Jakaroma().convert(text, false, false);
+//            String romaji = new Jakaroma().convert(text, false, false);
+            String romaji = mojiConverter.convertKanaToRomaji(text);
             text += " (" + romaji + ")";
         }
 
