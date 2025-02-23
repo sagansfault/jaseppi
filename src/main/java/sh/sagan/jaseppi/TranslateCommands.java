@@ -3,6 +3,7 @@ package sh.sagan.jaseppi;
 import com.google.cloud.translate.v3.LocationName;
 import com.google.cloud.translate.v3.TranslateTextRequest;
 import com.google.cloud.translate.v3.TranslateTextResponse;
+import com.google.cloud.translate.v3.Translation;
 import com.google.cloud.translate.v3.TranslationServiceClient;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -11,6 +12,7 @@ import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 public class TranslateCommands extends JaseppiCommandHandler {
 
@@ -49,13 +51,11 @@ public class TranslateCommands extends JaseppiCommandHandler {
         }
         event.deferReply().queue();
 
-        String text = event.getOption("text").getAsString().replaceAll(" ", "%20");
+        String text = event.getOption("text").getAsString();
         String source = te ? "en" : "ja";
         String target = te ? "ja" : "en";
 
-        String projectId = "jaseppi-451803";
-
-        LocationName parent = LocationName.of(projectId, "global");
+        LocationName parent = LocationName.of("jaseppi-451803", "global");
         TranslateTextRequest request = TranslateTextRequest.newBuilder()
                 .setParent(parent.toString())
                 .setMimeType("text/plain")
@@ -65,6 +65,6 @@ public class TranslateCommands extends JaseppiCommandHandler {
                 .build();
 
         TranslateTextResponse response = client.translateText(request);
-        event.getHook().editOriginal(response.getTranslations(0).getTranslatedText()).queue();
+        event.getHook().editOriginal(response.getTranslationsList().stream().map(Translation::getTranslatedText).collect(Collectors.joining(", "))).queue();
     }
 }
