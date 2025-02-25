@@ -39,7 +39,8 @@ public class Jaseppi {
                 new SF6Commands(jaseppi),
                 new AudioCommands(jaseppi),
                 new TranslateCommands(jaseppi),
-                new JishoCommands(jaseppi)
+                new JishoCommands(jaseppi),
+                new RestartCommands(jaseppi)
         ).forEach(handler -> {
             jda.addEventListener(handler);
             handler.register(commands);

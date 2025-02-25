@@ -21,7 +21,6 @@ public class JishoCommands extends JaseppiCommandHandler {
 
     @Override
     public void register(CommandListUpdateAction commands) {
-
     }
 
     @Override
