@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import sh.sagan.jaseppi.audio.AudioCommands;
 import sh.sagan.jaseppi.audio.JaseppiAudioManager;
+import sh.sagan.jaseppi.jisho.Jisho;
 import sh.sagan.sf6j.GameData;
 import sh.sagan.sf6j.SF6J;
 
@@ -17,6 +18,7 @@ public class Jaseppi {
     private final GameData sf6GameData;
     private final JaseppiAudioManager audioManager;
     private final HttpClient httpClient;
+    private final Jisho jisho;
 
     private Jaseppi(JDA jda, Config config, GameData sf6GameData) {
         this.jda = jda;
@@ -24,6 +26,7 @@ public class Jaseppi {
         this.sf6GameData = sf6GameData;
         this.audioManager = new JaseppiAudioManager(this);
         this.httpClient = HttpClient.newBuilder().build();
+        this.jisho = new Jisho(this);
     }
 
     public static Jaseppi create(JDA jda, Config config) {
@@ -35,7 +38,8 @@ public class Jaseppi {
         Stream.of(
                 new SF6Commands(jaseppi),
                 new AudioCommands(jaseppi),
-                new TranslateCommands(jaseppi)
+                new TranslateCommands(jaseppi),
+                new JishoCommands(jaseppi)
         ).forEach(handler -> {
             jda.addEventListener(handler);
             handler.register(commands);
@@ -63,5 +67,9 @@ public class Jaseppi {
 
     public HttpClient getHttpClient() {
         return httpClient;
+    }
+
+    public Jisho getJisho() {
+        return jisho;
     }
 }
