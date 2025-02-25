@@ -51,7 +51,7 @@ public class JishoCommands extends JaseppiCommandHandler {
                 Sense sens = senses.get(j);
                 String text = String.join("; ", sens.getEnglishDefinitions());
                 String sub = String.join(", ", sens.getPartsOfSpeech());
-                fieldValues.add((j + 1) + ". " + text + "\n    - " + sub);
+                fieldValues.add((j + 1) + ". " + text + " *[" + sub + "]*");
             }
             String fieldValue = String.join("\n", fieldValues);
             builder.addField(fieldName, fieldValue, false);
