@@ -23,12 +23,11 @@ public class RestartCommands extends JaseppiCommandHandler {
         if (!raw.startsWith(".restart")) {
             return;
         }
-        String text = raw.substring(3);
         if (event.getMessage().getAuthor().getIdLong() != 203347457944322048L) {
             return;
         }
         try {
-            new ProcessBuilder("bash", "-c", "git pull && mvn clean package && java -jar ~/jaseppi/target/jaseppi-0.1.0.jar")
+            new ProcessBuilder("bash", "-c", "git pull ; mvn clean package ; java -jar ~/jaseppi/target/jaseppi-0.1.0.jar")
                     .start();
         } catch (IOException e) {
             throw new RuntimeException(e);
