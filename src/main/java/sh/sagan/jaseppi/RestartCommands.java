@@ -28,7 +28,7 @@ public class RestartCommands extends JaseppiCommandHandler {
             return;
         }
         try {
-            new ProcessBuilder("git pull; mvn clean package; java -jar target/jaseppi-0.1.0.jar").start();
+            new ProcessBuilder("git pull && mvn clean package && java -jar target/jaseppi-0.1.0.jar").start();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
