@@ -27,7 +27,7 @@ public class JishoCommands extends JaseppiCommandHandler {
     @Override
     public void onMessageReceived(@NotNull MessageReceivedEvent event) {
         String raw = event.getMessage().getContentRaw();
-        if (!raw.startsWith("j")) {
+        if (!raw.startsWith(".j")) {
             return;
         }
         String text = raw.substring(3);
