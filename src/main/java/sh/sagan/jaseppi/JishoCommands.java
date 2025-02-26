@@ -2,9 +2,6 @@ package sh.sagan.jaseppi;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
-import org.jetbrains.annotations.NotNull;
 import sh.sagan.jaseppi.jisho.JishoResponse;
 import sh.sagan.jaseppi.jisho.JishoResponseData;
 import sh.sagan.jaseppi.jisho.Reading;
@@ -17,22 +14,12 @@ public class JishoCommands extends JaseppiCommandHandler {
 
     public JishoCommands(Jaseppi jaseppi) {
         super(jaseppi);
-    }
 
-    @Override
-    public void register(CommandListUpdateAction commands) {
-    }
-
-    @Override
-    public void onMessageReceived(@NotNull MessageReceivedEvent event) {
-        String raw = event.getMessage().getContentRaw();
-        if (!raw.startsWith(".j")) {
-            return;
-        }
-        String text = raw.substring(3);
-        String word = text.split(" ")[0];
-        jaseppi.getJisho().search(word).thenAccept(response -> {
-            event.getMessage().replyEmbeds(buildEmbed(word, response)).queue();
+        registerPrefixCommand("j", (event, args) -> {
+            String word = args.split(" ")[0];
+            jaseppi.getJisho().search(word).thenAccept(response -> {
+                event.getMessage().replyEmbeds(buildEmbed(word, response)).queue();
+            });
         });
     }
 

@@ -5,16 +5,13 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.managers.AudioManager;
-import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.jetbrains.annotations.NotNull;
 import sh.sagan.jaseppi.Jaseppi;
 import sh.sagan.jaseppi.JaseppiCommandHandler;
@@ -27,21 +24,30 @@ public class AudioCommands extends JaseppiCommandHandler {
 
     public AudioCommands(Jaseppi jaseppi) {
         super(jaseppi);
+
+        registerPrefixCommand("play", this::handlePlay);
+        registerPrefixCommand("leave", this::handleLeave);
+        registerPrefixCommand("skip", this::handleSkip);
+        registerPrefixCommand("repeat", this::handleRepeat);
     }
 
-    @Override
-    public void register(CommandListUpdateAction commands) {
-        commands.addCommands(
-                Commands.slash("play", "Play audio")
-                        .addOption(OptionType.STRING, "query", "Search query or link.", true)
-                        .setGuildOnly(true),
-                Commands.slash("leave", "Leave")
-                        .setGuildOnly(true),
-                Commands.slash("skip", "Skip a track")
-                        .setGuildOnly(true),
-                Commands.slash("repeat", "Repeat the current track")
-                        .setGuildOnly(true)
-        );
+    private AudioChannelUnion getChannel(MessageReceivedEvent event) {
+        Message message = event.getMessage();
+        Member member = event.getMember();
+        if (member == null) {
+            return null;
+        }
+        GuildVoiceState voiceState = member.getVoiceState();
+        if (voiceState == null) {
+            message.reply("Hop in vc").queue();
+            return null;
+        }
+        AudioChannelUnion channel = voiceState.getChannel();
+        if (channel == null) {
+            message.reply("Hop in a channel").queue();
+            return null;
+        }
+        return channel;
     }
 
     @Override
@@ -66,55 +72,16 @@ public class AudioCommands extends JaseppiCommandHandler {
         audioManager.closeAudioConnection();
     }
 
-    @Override
-    public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
-        Guild guild = event.getGuild();
-        if (guild == null) {
-            event.reply("Get outa my dms").queue();
-            return;
-        }
-        Member member = event.getInteraction().getMember();
-        if (member == null) {
-            event.reply("?").queue();
-            return;
-        }
-        if (!event.getName().equalsIgnoreCase("play") &&
-                !event.getName().equalsIgnoreCase("leave") &&
-                !event.getName().equalsIgnoreCase("skip") &&
-                !event.getName().equalsIgnoreCase("repeat")) {
-            return;
-        }
-        GuildVoiceState voiceState = member.getVoiceState();
-        if (voiceState == null) {
-            event.reply("Hop in vc").queue();
-            return;
-        }
-        AudioChannelUnion channel = voiceState.getChannel();
+    private void handlePlay(MessageReceivedEvent event, String args) {
+        AudioChannelUnion channel = getChannel(event);
         if (channel == null) {
-            event.reply("Hop in a channel").queue();
             return;
         }
-        AudioManager audioManager = guild.getAudioManager();
-        switch (event.getName()) {
-            case "play":
-                handlePlay(event, channel, audioManager);
-                break;
-            case "leave":
-                handleLeave(event, channel, audioManager);
-                break;
-            case "skip":
-                handleSkip(event, channel, audioManager);
-                break;
-            case "repeat":
-                handleRepeat(event, channel, audioManager);
-                break;
-        }
-    }
+        AudioManager audioManager = event.getGuild().getAudioManager();
+        Message message = event.getMessage();
 
-    private void handlePlay(SlashCommandInteractionEvent event, @NotNull AudioChannelUnion channel, AudioManager audioManager) {
-        event.deferReply().queue();
         AudioPlayerManager audioPlayerManager = jaseppi.getAudioManager().getAudioPlayerManager();
-        String query = event.getOption("query").getAsString().trim();
+        String query = args.trim();
         boolean link = query.startsWith("http");
         if (!link) {
             query = String.format("ytsearch:%s", query);
@@ -123,8 +90,8 @@ public class AudioCommands extends JaseppiCommandHandler {
             @Override
             public void trackLoaded(AudioTrack track) {
                 connectAndPlay(audioManager, channel, track);
-                String message = "```" + track.getInfo().title + "```";
-                event.getHook().editOriginal("Queued\n" + message).queue();
+                String reply = "```" + track.getInfo().title + "```";
+                message.reply("Queued\n" + reply).queue();
             }
 
             @Override
@@ -132,9 +99,9 @@ public class AudioCommands extends JaseppiCommandHandler {
                 List<AudioTrack> tracks = playlist.getTracks();
                 if (link) {
                     connectAndPlay(audioManager, channel, tracks);
-                    String message = tracks.stream().map(t -> t.getInfo().title).collect(Collectors.joining("\n"));
-                    message = "```" + message + "```";
-                    event.getHook().editOriginal("Queued\n" + message).queue();
+                    String reply = tracks.stream().map(t -> t.getInfo().title).collect(Collectors.joining("\n"));
+                    reply = "```" + reply + "```";
+                    message.reply("Queued\n" + reply).queue();
                 } else {
                     AudioTrack first = tracks.get(0);
                     if (first == null) {
@@ -146,12 +113,12 @@ public class AudioCommands extends JaseppiCommandHandler {
 
             @Override
             public void noMatches() {
-                event.getHook().editOriginal("Nothing found").queue();
+                message.reply("Nothing found").queue();
             }
 
             @Override
             public void loadFailed(FriendlyException exception) {
-                event.getHook().editOriginal("Could not play: " + exception.getMessage()).queue();
+                message.reply("Could not play: " + exception.getMessage()).queue();
                 exception.printStackTrace();
             }
         });
@@ -179,21 +146,22 @@ public class AudioCommands extends JaseppiCommandHandler {
         }
     }
 
-    private void handleLeave(SlashCommandInteractionEvent event, @NotNull AudioChannelUnion channel, AudioManager audioManager) {
+    private void handleLeave(MessageReceivedEvent event, String args) {
+        AudioManager audioManager = event.getGuild().getAudioManager();
         jaseppi.getAudioManager().getTrackScheduler().setRepeat(false);
         jaseppi.getAudioManager().getTrackScheduler().clearQueue();
         audioManager.closeAudioConnection();
-        event.reply("Bye").queue();
+        event.getMessage().reply("Bye").queue();
     }
 
-    private void handleSkip(SlashCommandInteractionEvent event, @NotNull AudioChannelUnion channel, AudioManager audioManager) {
+    private void handleSkip(MessageReceivedEvent event, String args) {
         jaseppi.getAudioManager().getTrackScheduler().setRepeat(false);
         jaseppi.getAudioManager().getTrackScheduler().nextTrack();
-        event.reply("Skipped").queue();
+        event.getMessage().reply("Skipped").queue();
     }
 
-    private void handleRepeat(SlashCommandInteractionEvent event, @NotNull AudioChannelUnion channel, AudioManager audioManager) {
+    private void handleRepeat(MessageReceivedEvent event, String args) {
         jaseppi.getAudioManager().getTrackScheduler().setRepeat(true);
-        event.reply("Repeating").queue();
+        event.getMessage().reply("Repeating").queue();
     }
 }

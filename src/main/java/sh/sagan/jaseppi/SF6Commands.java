@@ -28,7 +28,7 @@ public class SF6Commands extends JaseppiCommandHandler {
     }
 
     @Override
-    public void register(CommandListUpdateAction commands) {
+    public void registerSlashCommands(CommandListUpdateAction commands) {
         commands.addCommands(
                 Commands.slash("sf6", "Print SF6 frame data")
                         .addOption(OptionType.STRING, "character", "The character of the move's frame data.", true, true)

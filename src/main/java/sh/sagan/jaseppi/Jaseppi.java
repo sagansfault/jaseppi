@@ -1,7 +1,11 @@
 package sh.sagan.jaseppi;
 
 import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
+import org.jetbrains.annotations.NotNull;
 import sh.sagan.jaseppi.audio.AudioCommands;
 import sh.sagan.jaseppi.audio.JaseppiAudioManager;
 import sh.sagan.jaseppi.jisho.Jisho;
@@ -9,9 +13,13 @@ import sh.sagan.sf6j.GameData;
 import sh.sagan.sf6j.SF6J;
 
 import java.net.http.HttpClient;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class Jaseppi {
+
+    private static final String PREFIX = ".";
 
     private final JDA jda;
     private final Config config;
@@ -35,15 +43,26 @@ public class Jaseppi {
         Jaseppi jaseppi = new Jaseppi(jda, config, sf6GameData);
 
         CommandListUpdateAction commands = jda.getGuildById("466452910197440514").updateCommands();
-        Stream.of(
+        List<JaseppiCommandHandler> commandHandlers = Arrays.asList(
                 new SF6Commands(jaseppi),
                 new AudioCommands(jaseppi),
                 new TranslateCommands(jaseppi),
-                new JishoCommands(jaseppi),
-                new RestartCommands(jaseppi)
-        ).forEach(handler -> {
+                new JishoCommands(jaseppi)
+        );
+        commandHandlers.forEach(handler -> {
             jda.addEventListener(handler);
-            handler.register(commands);
+            handler.registerSlashCommands(commands);
+        });
+        jda.addEventListener(new ListenerAdapter() {
+            @Override
+            public void onMessageReceived(@NotNull MessageReceivedEvent event) {
+                Message message = event.getMessage();
+                String raw = message.getContentRaw();
+                commandHandlers.stream()
+                        .flatMap(h -> h.getCommands().entrySet().stream())
+                        .filter(e -> raw.startsWith(PREFIX + e.getKey()))
+                        .forEach(e -> e.getValue().accept(event, raw.substring(e.getKey().length() + 2)));
+            }
         });
         commands.queue();
 
