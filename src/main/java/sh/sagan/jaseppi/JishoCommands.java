@@ -18,7 +18,6 @@ public class JishoCommands extends JaseppiCommandHandler {
         registerPrefixCommand("j", (event, args) -> {
             String word = args.split(" ")[0];
             jaseppi.getJisho().search(word).thenAccept(response -> {
-                System.out.println(response);
                 event.getMessage().replyEmbeds(buildEmbed(word, response)).queue();
             });
         });
@@ -30,7 +29,7 @@ public class JishoCommands extends JaseppiCommandHandler {
         List<JishoResponseData> data = response.getData();
         for (int i = 0; i < Math.min(3, data.size()); i++) {
             JishoResponseData datum = data.get(i);
-            Reading reading = datum.getJapanese().stream().filter(r -> r.getReading() != null && r.getWord() != null).findFirst().get();
+            Reading reading = datum.getJapanese().get(0);
             String fieldName = reading.getWord() + " (" + reading.getReading() + ")";
             List<String> fieldValues = new ArrayList<>();
             List<Sense> senses = datum.getSenses();
