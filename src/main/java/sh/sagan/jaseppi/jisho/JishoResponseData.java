@@ -27,4 +27,14 @@ public class JishoResponseData {
     public List<Sense> getSenses() {
         return senses;
     }
+
+    @Override
+    public String toString() {
+        return "JishoResponseData{" +
+                "common=" + common +
+                ", slug='" + slug + '\'' +
+                ", japanese=" + japanese +
+                ", senses=" + senses +
+                '}';
+    }
 }

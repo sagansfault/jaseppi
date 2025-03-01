@@ -12,4 +12,12 @@ public class Reading {
     public String getReading() {
         return reading;
     }
+
+    @Override
+    public String toString() {
+        return "Reading{" +
+                "reading='" + reading + '\'' +
+                ", word='" + word + '\'' +
+                '}';
+    }
 }

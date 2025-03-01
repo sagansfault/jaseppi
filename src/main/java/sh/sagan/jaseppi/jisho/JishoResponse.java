@@ -9,4 +9,11 @@ public class JishoResponse {
     public List<JishoResponseData> getData() {
         return data;
     }
+
+    @Override
+    public String toString() {
+        return "JishoResponse{" +
+                "data=" + data +
+                '}';
+    }
 }

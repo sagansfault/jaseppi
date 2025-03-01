@@ -18,6 +18,7 @@ public class JishoCommands extends JaseppiCommandHandler {
         registerPrefixCommand("j", (event, args) -> {
             String word = args.split(" ")[0];
             jaseppi.getJisho().search(word).thenAccept(response -> {
+                System.out.println(response);
                 event.getMessage().replyEmbeds(buildEmbed(word, response)).queue();
             });
         });

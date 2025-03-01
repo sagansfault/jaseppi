@@ -18,4 +18,12 @@ public class Sense {
     public List<String> getPartsOfSpeech() {
         return partsOfSpeech;
     }
+
+    @Override
+    public String toString() {
+        return "Sense{" +
+                "englishDefinitions=" + englishDefinitions +
+                ", partsOfSpeech=" + partsOfSpeech +
+                '}';
+    }
 }
