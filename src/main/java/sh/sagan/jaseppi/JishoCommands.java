@@ -30,7 +30,7 @@ public class JishoCommands extends JaseppiCommandHandler {
         for (int i = 0; i < Math.min(3, data.size()); i++) {
             JishoResponseData datum = data.get(i);
             Reading reading = datum.getJapanese().get(0);
-            String fieldName = reading.getWord() + " (" + reading.getReading() + ")";
+            String fieldName = reading.toString();
             List<String> fieldValues = new ArrayList<>();
             List<Sense> senses = datum.getSenses();
             for (int j = 0; j < Math.min(3, senses.size()); j++) {

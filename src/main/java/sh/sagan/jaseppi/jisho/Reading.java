@@ -1,5 +1,7 @@
 package sh.sagan.jaseppi.jisho;
 
+import java.util.Objects;
+
 public class Reading {
 
     private String word;
@@ -15,9 +17,14 @@ public class Reading {
 
     @Override
     public String toString() {
-        return "Reading{" +
-                "reading='" + reading + '\'' +
-                ", word='" + word + '\'' +
-                '}';
+        if (word == null) {
+            return Objects.requireNonNullElse(reading, "N/A");
+        } else {
+            if (reading == null) {
+                return word;
+            } else {
+                return word + " (" + reading + ")";
+            }
+        }
     }
 }
