@@ -3,8 +3,10 @@ package sh.sagan.jaseppi.audio;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.AudioSourceManagers;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
+import net.dv8tion.jda.api.entities.ClientType;
 import sh.sagan.jaseppi.Jaseppi;
 
 public class JaseppiAudioManager {
