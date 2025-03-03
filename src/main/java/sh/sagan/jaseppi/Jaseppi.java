@@ -61,7 +61,13 @@ public class Jaseppi {
                 commandHandlers.stream()
                         .flatMap(h -> h.getCommands().entrySet().stream())
                         .filter(e -> raw.startsWith(PREFIX + e.getKey()))
-                        .forEach(e -> e.getValue().accept(event, raw.substring(e.getKey().length() + 2)));
+                        .forEach(e -> {
+                            String args = "";
+                            if (raw.length() > e.getKey().length() + 1) {
+                                args = raw.substring(e.getKey().length() + 2);
+                            }
+                            e.getValue().accept(event, args);
+                        });
             }
         });
         commands.queue();
