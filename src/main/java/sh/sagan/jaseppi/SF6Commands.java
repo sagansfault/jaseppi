@@ -140,8 +140,8 @@ public class SF6Commands extends JaseppiCommandHandler {
 
     private Gif getGif(CharacterId characterId, Move move) {
         String moveName = move.getName()
-                .replaceAll("Stand\b", "Standing")
-                .replaceAll("Crouch\b", "Crouching")
+                .replaceAll("Stand\\b", "Standing")
+                .replaceAll("Crouch\\b", "Crouching")
                 .replaceAll("HP", "Heavy Punch")
                 .replaceAll("MP", "Medium Punch")
                 .replaceAll("LP", "Light Punch")
