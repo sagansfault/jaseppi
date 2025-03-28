@@ -1,6 +1,7 @@
 package sh.sagan.jaseppi;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.events.interaction.command.CommandAutoCompleteInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.AutoCompleteQuery;
@@ -12,15 +13,17 @@ import net.dv8tion.jda.api.requests.restaction.CommandListUpdateAction;
 import org.jetbrains.annotations.NotNull;
 import sh.sagan.sf6j.CharacterId;
 import sh.sagan.sf6j.GameData;
+import sh.sagan.sf6j.Gif;
 import sh.sagan.sf6j.Move;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class SF6Commands extends JaseppiCommandHandler {
 
-    private GameData sf6GameData;
+    private final GameData sf6GameData;
 
     public SF6Commands(Jaseppi jaseppi) {
         super(jaseppi);
@@ -57,22 +60,32 @@ public class SF6Commands extends JaseppiCommandHandler {
             event.reply("Could not find move").queue();
             return;
         }
-        event.replyEmbeds(
-                new EmbedBuilder()
-                        .setTitle(move.getIdentifier())
-                        .addField("Damage", move.getDamage(), true)
-                        .addField("Guard", move.getGuard(), true)
-                        .addField("Cancel", move.getCancel(), true)
-                        .addField("Startup", move.getStartup(), true)
-                        .addField("Active", move.getActive(), true)
-                        .addField("Recovery", move.getRecovery(), true)
-                        .addField("On Block", move.getBlockAdvantage(), true)
-                        .addField("Armor", move.getArmor(), true)
-                        .addField("Invuln", move.getInvuln(), true)
-                        .setImage(move.getImage())
-                        .setFooter(move.getNotes())
-                        .build()
-        ).queue();
+        List<MessageEmbed> embeds = new ArrayList<>();
+        embeds.add(new EmbedBuilder()
+                .setTitle(move.getIdentifier())
+                .setUrl("https://wiki.supercombo.gg/w/Street_Fighter_6")
+                .addField("Damage", move.getDamage(), true)
+                .addField("Guard", move.getGuard(), true)
+                .addField("Cancel", move.getCancel(), true)
+                .addField("Startup", move.getStartup(), true)
+                .addField("Active", move.getActive(), true)
+                .addField("Recovery", move.getRecovery(), true)
+                .addField("On Block", move.getBlockAdvantage(), true)
+                .addField("Armor", move.getArmor(), true)
+                .addField("Invuln", move.getInvuln(), true)
+                .setImage(move.getImage())
+                .setFooter(move.getNotes())
+                .build()
+        );
+        Gif gif = getGif(characterId, move);
+        if (gif != null) {
+            embeds.add(new EmbedBuilder()
+                    .setUrl("https://wiki.supercombo.gg/w/Street_Fighter_6")
+                    .setImage(gif.getGifURL())
+                    .build()
+            );
+        }
+        event.replyEmbeds(embeds).queue();
     }
 
     @Override
@@ -123,5 +136,14 @@ public class SF6Commands extends JaseppiCommandHandler {
             }
             event.replyChoices(choices).queue();
         }
+    }
+
+    private Gif getGif(CharacterId characterId, Move move) {
+        for (Gif gif : sf6GameData.getCharacterData().get(characterId).getGifs()) {
+            if (gif.getMoveName().toLowerCase().contains(move.getName().toLowerCase())) {
+                return gif;
+            }
+        }
+        return null;
     }
 }
