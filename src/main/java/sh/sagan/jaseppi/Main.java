@@ -31,7 +31,8 @@ public class Main {
         Config config = GSON.fromJson(read, Config.class);
 
         String token = config.getDiscordToken();
-        JDA jda = JDABuilder.createLight(token, EnumSet.allOf(GatewayIntent.class))
+        JDA jda = JDABuilder.createLight(token, EnumSet.of(GatewayIntent.GUILD_VOICE_STATES,
+                        GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_MEMBERS))
                 .setMemberCachePolicy(MemberCachePolicy.VOICE)
                 .enableCache(CacheFlag.VOICE_STATE)
                 .build();
