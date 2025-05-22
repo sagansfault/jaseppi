@@ -62,7 +62,7 @@ public class Jaseppi {
                 String raw = message.getContentRaw();
                 commandHandlers.stream()
                         .flatMap(h -> h.getCommands().entrySet().stream())
-                        .filter(e -> raw.startsWith(PREFIX + e.getKey()))
+                        .filter(e -> raw.startsWith(PREFIX + e.getKey() + " "))
                         .forEach(e -> {
                             String args = "";
                             if (raw.length() > e.getKey().length() + 1) {
