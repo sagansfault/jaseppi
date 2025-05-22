@@ -48,7 +48,8 @@ public class Jaseppi {
                 new AudioCommands(jaseppi),
                 new TranslateCommands(jaseppi),
                 new JishoCommands(jaseppi),
-                new NickCommand(jaseppi)
+                new NickCommand(jaseppi),
+                new JapanCommand(jaseppi)
         );
         commandHandlers.forEach(handler -> {
             jda.addEventListener(handler);
