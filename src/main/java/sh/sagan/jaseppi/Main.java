@@ -1,9 +1,11 @@
 package sh.sagan.jaseppi;
 
+import club.minnced.discord.jdave.interop.JDaveSessionFactory;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.audio.AudioModuleConfig;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
@@ -21,7 +23,6 @@ public class Main {
             .create();
 
     public static void main(String[] args) {
-
         String read;
         try {
             read = new String(Files.readAllBytes(Path.of("config.json")));
@@ -35,6 +36,7 @@ public class Main {
                         GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT))
                 .setMemberCachePolicy(MemberCachePolicy.VOICE)
                 .enableCache(CacheFlag.VOICE_STATE)
+                .setAudioModuleConfig(new AudioModuleConfig().withDaveSessionFactory(new JDaveSessionFactory()))
                 .build();
         Jaseppi jaseppi = Jaseppi.create(jda, config);
     }

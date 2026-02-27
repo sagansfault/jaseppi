@@ -2,7 +2,7 @@ package sh.sagan.jaseppi;
 
 public class JapanCommand extends JaseppiCommandHandler {
 
-    private static final long TAKEOFF_MILLIS = 1756832400000L;
+    private static final long TAKEOFF_MILLIS = 1788975000000L;
 
     public JapanCommand(Jaseppi jaseppi) {
         super(jaseppi);

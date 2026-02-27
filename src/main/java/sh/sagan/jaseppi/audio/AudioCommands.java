@@ -5,6 +5,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import dev.lavalink.youtube.YoutubeAudioSourceManager;
 import net.dv8tion.jda.api.entities.GuildVoiceState;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -84,7 +85,7 @@ public class AudioCommands extends JaseppiCommandHandler {
         String query = args.trim();
         boolean link = query.startsWith("http");
         if (!link) {
-            query = String.format("ytsearch:%s", query);
+            query = YoutubeAudioSourceManager.SEARCH_PREFIX + query;
         }
         audioPlayerManager.loadItem(query, new AudioLoadResultHandler() {
             @Override
@@ -103,7 +104,7 @@ public class AudioCommands extends JaseppiCommandHandler {
                     reply = "```" + reply + "```";
                     message.reply("Queued\n" + reply).queue();
                 } else {
-                    AudioTrack first = tracks.get(0);
+                    AudioTrack first = tracks.getFirst();
                     if (first == null) {
                         return;
                     }
