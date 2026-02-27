@@ -36,7 +36,6 @@ public class SF6Commands extends JaseppiCommandHandler {
                 Commands.slash("sf6", "Print SF6 frame data")
                         .addOption(OptionType.STRING, "character", "The character of the move's frame data.", true, true)
                         .addOption(OptionType.STRING, "move", "The move of the character.", true, true)
-                        .setGuildOnly(true)
         );
     }
 
