@@ -10,12 +10,10 @@ import java.nio.ByteBuffer;
 
 public class AudioPlayerSendHandler implements AudioSendHandler, AudioReceiveHandler {
 
-    private final Jaseppi jaseppi;
     private final AudioPlayer audioPlayer;
     private AudioFrame lastFrame;
 
     public AudioPlayerSendHandler(Jaseppi jaseppi) {
-        this.jaseppi = jaseppi;
         this.audioPlayer = jaseppi.getAudioManager().getPlayer();
     }
 

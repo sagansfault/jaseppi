@@ -86,6 +86,11 @@
             <version>0.1.6</version>
         </dependency>
         <dependency>
+            <groupId>club.minnced</groupId>
+            <artifactId>jdave-native-linux-aarch64</artifactId>
+            <version>0.1.7</version>
+        </dependency>
+        <dependency>
             <groupId>dev.arbjerg</groupId>
             <artifactId>lavaplayer-ext-youtube-rotator</artifactId>
             <version>2.2.2</version>
