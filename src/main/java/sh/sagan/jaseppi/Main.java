@@ -21,7 +21,7 @@ public class Main {
             .setPrettyPrinting()
             .create();
 
-    public static void main(String[] args) {
+    static void main() {
         String read;
         try {
             read = new String(Files.readAllBytes(Path.of("config.json")));
